@@ -1,76 +1,77 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import { useEffect, useState } from "react"
-import { Building2, GraduationCap, User } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { ThemeToggle } from "@/components/theme-toggle"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import { Building2, GraduationCap, User } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { useSearchParams, useRouter } from "next/navigation"
-import { useToast } from "@/hooks/use-toast"
-import Link from "next/link"
+} from "@/components/ui/select";
+import { useSearchParams, useRouter } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
+import Link from "next/link";
 
 export default function Register() {
-  const [userType, setUserType] = useState<"student" | "company" | "university" | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
-  const searchParams = useSearchParams()
-  const router = useRouter()
-  const { toast } = useToast()
+  const [userType, setUserType] = useState<
+    "student" | "company" | "university"
+  >("student");
+  const [isLoading, setIsLoading] = useState(false);
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const { toast } = useToast();
 
   useEffect(() => {
-    const type = searchParams.get("type") as typeof userType
+    const type = searchParams.get("type") as typeof userType;
     if (type && ["student", "company", "university"].includes(type)) {
-      setUserType(type)
+      setUserType(type);
     }
-  }, [searchParams])
+  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setIsLoading(true)
+    e.preventDefault();
+    setIsLoading(true);
 
     try {
       // Here you would typically make an API call to register the user
-      // For now, we'll simulate a successful registration
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       toast({
         title: "Account created successfully!",
         description: "Redirecting to your dashboard...",
-      })
+      });
 
       // Redirect to the appropriate dashboard
       setTimeout(() => {
         switch (userType) {
           case "student":
-            router.push("/students")
-            break
+            router.push("/students");
+            break;
           case "company":
-            router.push("/companies")
-            break
+            router.push("/companies");
+            break;
           case "university":
-            router.push("/universities")
-            break
+            router.push("/universities");
+            break;
         }
-      }, 1000)
+      }, 1000);
     } catch (error) {
       toast({
         title: "Error creating account",
         description: "Please try again later",
         variant: "destructive",
-      })
+      });
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white dark:from-blue-950 dark:to-black">
@@ -83,7 +84,12 @@ export default function Register() {
                 Virtual Careers Fair
               </span>
             </Link>
-            <ThemeToggle />
+            <div className="flex items-center space-x-4">
+              <Button variant="outline" asChild>
+                <Link href="/login">Sign In</Link>
+              </Button>
+              <ThemeToggle />
+            </div>
           </div>
         </div>
       </nav>
@@ -136,7 +142,9 @@ export default function Register() {
                   <div className="flex justify-center mb-4">
                     <item.icon className="h-12 w-12 text-blue-600 dark:text-blue-400" />
                   </div>
-                  <h2 className="text-xl font-semibold text-center mb-2">{item.title}</h2>
+                  <h2 className="text-xl font-semibold text-center mb-2">
+                    {item.title}
+                  </h2>
                   <p className="text-sm text-gray-600 dark:text-gray-300 text-center">
                     {item.description}
                   </p>
@@ -168,11 +176,19 @@ export default function Register() {
                         </div>
                         <div className="space-y-2">
                           <Label htmlFor="university">University</Label>
-                          <Input id="university" placeholder="Enter your university" required />
+                          <Input
+                            id="university"
+                            placeholder="Enter your university"
+                            required
+                          />
                         </div>
                         <div className="space-y-2">
                           <Label htmlFor="degree">Degree Program</Label>
-                          <Input id="degree" placeholder="e.g., Computer Science" required />
+                          <Input
+                            id="degree"
+                            placeholder="e.g., Computer Science"
+                            required
+                          />
                         </div>
                       </>
                     )}
@@ -181,7 +197,11 @@ export default function Register() {
                       <>
                         <div className="space-y-2">
                           <Label htmlFor="companyName">Company Name</Label>
-                          <Input id="companyName" placeholder="Enter company name" required />
+                          <Input
+                            id="companyName"
+                            placeholder="Enter company name"
+                            required
+                          />
                         </div>
                         <div className="space-y-2">
                           <Label htmlFor="industry">Industry</Label>
@@ -192,8 +212,12 @@ export default function Register() {
                             <SelectContent>
                               <SelectItem value="tech">Technology</SelectItem>
                               <SelectItem value="finance">Finance</SelectItem>
-                              <SelectItem value="healthcare">Healthcare</SelectItem>
-                              <SelectItem value="education">Education</SelectItem>
+                              <SelectItem value="healthcare">
+                                Healthcare
+                              </SelectItem>
+                              <SelectItem value="education">
+                                Education
+                              </SelectItem>
                               <SelectItem value="other">Other</SelectItem>
                             </SelectContent>
                           </Select>
@@ -205,10 +229,18 @@ export default function Register() {
                               <SelectValue placeholder="Select company size" />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="1-50">1-50 employees</SelectItem>
-                              <SelectItem value="51-200">51-200 employees</SelectItem>
-                              <SelectItem value="201-1000">201-1000 employees</SelectItem>
-                              <SelectItem value="1000+">1000+ employees</SelectItem>
+                              <SelectItem value="1-50">
+                                1-50 employees
+                              </SelectItem>
+                              <SelectItem value="51-200">
+                                51-200 employees
+                              </SelectItem>
+                              <SelectItem value="201-1000">
+                                201-1000 employees
+                              </SelectItem>
+                              <SelectItem value="1000+">
+                                1000+ employees
+                              </SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
@@ -218,23 +250,44 @@ export default function Register() {
                     {userType === "university" && (
                       <>
                         <div className="space-y-2">
-                          <Label htmlFor="universityName">University Name</Label>
-                          <Input id="universityName" placeholder="Enter university name" required />
+                          <Label htmlFor="universityName">
+                            University Name
+                          </Label>
+                          <Input
+                            id="universityName"
+                            placeholder="Enter university name"
+                            required
+                          />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="department">Career Services Department</Label>
-                          <Input id="department" placeholder="Enter department name" required />
+                          <Label htmlFor="department">
+                            Career Services Department
+                          </Label>
+                          <Input
+                            id="department"
+                            placeholder="Enter department name"
+                            required
+                          />
                         </div>
                         <div className="space-y-2">
                           <Label htmlFor="location">Location</Label>
-                          <Input id="location" placeholder="City, Country" required />
+                          <Input
+                            id="location"
+                            placeholder="City, Country"
+                            required
+                          />
                         </div>
                       </>
                     )}
 
                     <div className="space-y-2">
                       <Label htmlFor="email">Email</Label>
-                      <Input id="email" type="email" placeholder="Enter your email" required />
+                      <Input
+                        id="email"
+                        type="email"
+                        placeholder="Enter your email"
+                        required
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="password">Password</Label>
@@ -248,9 +301,26 @@ export default function Register() {
                     </div>
                   </div>
 
-                  <Button className="w-full" size="lg" type="submit" disabled={isLoading}>
+                  <Button
+                    className="w-full"
+                    size="lg"
+                    type="submit"
+                    disabled={isLoading}
+                  >
                     {isLoading ? "Creating Account..." : "Create Account"}
                   </Button>
+
+                  <div className="text-center mt-4">
+                    <p className="text-gray-600 dark:text-gray-300">
+                      Already have an account?{" "}
+                      <Link
+                        href="/login"
+                        className="text-blue-600 dark:text-blue-400 hover:underline"
+                      >
+                        Sign in here
+                      </Link>
+                    </p>
+                  </div>
                 </form>
               </Card>
             </motion.div>
@@ -258,5 +328,5 @@ export default function Register() {
         </motion.div>
       </main>
     </div>
-  )
+  );
 }
