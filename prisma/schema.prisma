@@ -31,6 +31,17 @@ enum GENDER {
   OTHER
 }
 
+enum JOB_TYPE {
+  FULL_TIME
+  PART_TIME
+  INTERNSHIP
+}
+
+enum WORK_MODE {
+  REMOTE
+  ONSITE
+}
+
 model UserAccount {
   id        Int       @id @default(autoincrement())
   email     String    @unique
@@ -57,6 +68,8 @@ model Student {
   degreeProgrammeId Int
 
   interviews         Interview[]
+  studentRoles       StudentRole[]
+  studentSkills      StudentSkill[]
   interviewRequests  InterviewRequest[]
   careersDayStudents CareersDayStudent[]
   userAccount        UserAccount         @relation(fields: [userAccountId], references: [id])
@@ -110,6 +123,7 @@ model Company {
   userAccountId   Int    @unique
 
   interviews          Interview[]
+  vacancies           Vacancy[]
   interviewRequests   InterviewRequest[]
   careersDayCompanies CareersDayCompany[]
   partneredCompanies  PartneredCompany[]
@@ -122,6 +136,40 @@ model IndustryField {
   industryName String
 
   companies Company[]
+}
+
+model Vacancy {
+  id           Int       @id @default(autoincrement())
+  jobRoleId    Int
+  description  String
+  companyId    Int
+  salary       Int
+  jobType      JOB_TYPE
+  vacancies    Int
+  workMode     WORK_MODE
+  hoursPerWeek Int
+  experience   Int
+
+  vacancySkills VacancySkill[]
+  company       Company        @relation(fields: [companyId], references: [id])
+  jobRole       JobRole        @relation(fields: [jobRoleId], references: [id])
+}
+
+model StudentRole {
+  id        Int @id @default(autoincrement())
+  roleId    Int
+  studentId Int
+
+  role    JobRole @relation(fields: [roleId], references: [id])
+  student Student @relation(fields: [studentId], references: [id])
+}
+
+model JobRole {
+  id       Int    @id @default(autoincrement())
+  roleName String
+
+  vacancies    Vacancy[]
+  studentRoles StudentRole[]
 }
 
 model PartneredCompany {
@@ -196,4 +244,33 @@ model InterviewRequest {
   student    Student     @relation(fields: [studentId], references: [id])
   company    Company     @relation(fields: [companyId], references: [id])
   careersDay CareersDay  @relation(fields: [careerDayId], references: [id])
+}
+
+model Skill {
+  id          Int    @id @default(autoincrement())
+  name        String
+  description String
+  logo        String
+
+  studentSkills StudentSkill[]
+  vacancySkills VacancySkill[]
+}
+
+model StudentSkill {
+  id         Int @id @default(autoincrement())
+  studentId  Int
+  skillId    Int
+  skillLevel Int
+
+  student Student @relation(fields: [studentId], references: [id])
+  skill   Skill   @relation(fields: [skillId], references: [id])
+}
+
+model VacancySkill {
+  id        Int @id @default(autoincrement())
+  vacancyId Int
+  skillId   Int
+
+  vacancy Vacancy @relation(fields: [vacancyId], references: [id])
+  skill   Skill   @relation(fields: [skillId], references: [id])
 }
