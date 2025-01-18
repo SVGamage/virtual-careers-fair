@@ -87,9 +87,11 @@ export default function StudentDashboard() {
                     placeholder="Search for companies or positions..."
                     className="flex-1"
                   />
-                  <Button>
-                    <Search className="h-4 w-4 mr-2" />
-                    Search
+                  <Button asChild>
+                    <Link href="/companies/browse">
+                      <Search className="h-4 w-4 mr-2" />
+                      Browse All
+                    </Link>
                   </Button>
                 </div>
 
@@ -127,7 +129,13 @@ export default function StudentDashboard() {
                             ))}
                           </div>
                         </div>
-                        <Button variant="outline">View Profile</Button>
+                        <Button variant="outline" asChild>
+                          <Link
+                            href={`/companies/${company.name.toLowerCase()}`}
+                          >
+                            View Profile
+                          </Link>
+                        </Button>
                       </motion.div>
                     ))}
                   </div>
@@ -195,17 +203,29 @@ export default function StudentDashboard() {
               <Card className="p-6">
                 <h2 className="text-xl font-bold mb-4">Quick Actions</h2>
                 <div className="space-y-2">
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start"
+                    asChild
+                  >
+                    <Link href="/companies/browse">
+                      <Building2 className="h-4 w-4 mr-2" />
+                      Browse Companies
+                    </Link>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start"
+                    asChild
+                  >
+                    <Link href="/messages">
+                      <MessageSquare className="h-4 w-4 mr-2" />
+                      Messages
+                    </Link>
+                  </Button>
                   <Button variant="outline" className="w-full justify-start">
                     <Calendar className="h-4 w-4 mr-2" />
                     Schedule Interview
-                  </Button>
-                  <Button variant="outline" className="w-full justify-start">
-                    <Building2 className="h-4 w-4 mr-2" />
-                    Browse Companies
-                  </Button>
-                  <Button variant="outline" className="w-full justify-start">
-                    <MessageSquare className="h-4 w-4 mr-2" />
-                    Messages
                   </Button>
                 </div>
               </Card>

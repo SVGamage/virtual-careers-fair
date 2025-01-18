@@ -1,0 +1,274 @@
+"use client";
+
+import { useState } from "react";
+import { motion } from "framer-motion";
+import {
+  Bell,
+  Building2,
+  MessageSquare,
+  Search,
+  Briefcase,
+  Users,
+  MapPin,
+  Filter,
+  GraduationCap,
+  ArrowLeft,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { ThemeToggle } from "@/components/theme-toggle";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import Link from "next/link";
+
+const companies = [
+  {
+    id: 1,
+    name: "TechCorp",
+    industry: "Technology",
+    location: "San Francisco, CA",
+    size: "1000+ employees",
+    positions: ["Software Engineer", "Product Manager", "Data Scientist"],
+    description:
+      "Leading technology company focused on innovative solutions in AI and cloud computing.",
+    logo: "https://images.unsplash.com/photo-1549924231-f129b911e442?w=128&h=128&fit=crop&crop=faces",
+    openPositions: 12,
+    rating: 4.5,
+  },
+  {
+    id: 2,
+    name: "FinanceHub",
+    industry: "Finance",
+    location: "New York, NY",
+    size: "500-1000 employees",
+    positions: [
+      "Financial Analyst",
+      "Investment Banking Associate",
+      "Risk Manager",
+    ],
+    description:
+      "Global financial services firm providing innovative solutions in investment banking and asset management.",
+    logo: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=128&h=128&fit=crop&crop=faces",
+    openPositions: 8,
+    rating: 4.2,
+  },
+  {
+    id: 3,
+    name: "HealthTech Solutions",
+    industry: "Healthcare",
+    location: "Boston, MA",
+    size: "201-500 employees",
+    positions: [
+      "Medical Device Engineer",
+      "Clinical Data Analyst",
+      "Healthcare Consultant",
+    ],
+    description:
+      "Innovative healthcare technology company developing cutting-edge medical devices and solutions.",
+    logo: "https://images.unsplash.com/photo-1550831107-1553da8c8464?w=128&h=128&fit=crop&crop=faces",
+    openPositions: 5,
+    rating: 4.7,
+  },
+];
+
+export default function BrowseCompanies() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [industryFilter, setIndustryFilter] = useState("all");
+  const [sizeFilter, setSizeFilter] = useState("all");
+
+  const filteredCompanies = companies.filter((company) => {
+    const matchesSearch =
+      company.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      company.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      company.positions.some((position) =>
+        position.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+
+    const matchesIndustry =
+      industryFilter === "all" || company.industry === industryFilter;
+    const matchesSize = sizeFilter === "all" || company.size === sizeFilter;
+
+    return matchesSearch && matchesIndustry && matchesSize;
+  });
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white dark:from-blue-950 dark:to-black">
+      <nav className="fixed w-full bg-white/80 dark:bg-black/80 backdrop-blur-sm border-b z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <Link href="/students" className="flex items-center">
+              <GraduationCap className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+              <span className="ml-2 text-xl font-bold text-gray-900 dark:text-white">
+                Browse Companies
+              </span>
+            </Link>
+            <div className="flex items-center space-x-4">
+              <Button variant="ghost" size="icon">
+                <Bell className="h-5 w-5" />
+              </Button>
+              <Link href="/messages">
+                <Button variant="ghost" size="icon">
+                  <MessageSquare className="h-5 w-5" />
+                </Button>
+              </Link>
+              <ThemeToggle />
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <main className="pt-24 pb-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="space-y-6"
+          >
+            <Card className="p-6">
+              <div className="flex flex-col md:flex-row gap-4">
+                <Button asChild>
+                  <Link href={`/students`}>
+                    <ArrowLeft className="h-4 w-4 mr-2" />
+                    Dashboard
+                  </Link>
+                </Button>
+                <div className="flex-1 flex-row">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500" />
+                    <Input
+                      className="pl-10"
+                      placeholder="Search companies, positions, or keywords..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                  </div>
+                </div>
+                <div className="flex gap-4">
+                  <Select
+                    value={industryFilter}
+                    onValueChange={setIndustryFilter}
+                  >
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="Industry" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Industries</SelectItem>
+                      <SelectItem value="Technology">Technology</SelectItem>
+                      <SelectItem value="Finance">Finance</SelectItem>
+                      <SelectItem value="Healthcare">Healthcare</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Select value={sizeFilter} onValueChange={setSizeFilter}>
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="Company Size" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Sizes</SelectItem>
+                      <SelectItem value="1-50 employees">
+                        1-50 employees
+                      </SelectItem>
+                      <SelectItem value="51-200 employees">
+                        51-200 employees
+                      </SelectItem>
+                      <SelectItem value="201-500 employees">
+                        201-500 employees
+                      </SelectItem>
+                      <SelectItem value="500-1000 employees">
+                        500-1000 employees
+                      </SelectItem>
+                      <SelectItem value="1000+ employees">
+                        1000+ employees
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </Card>
+
+            <div className="grid grid-cols-1 gap-6">
+              {filteredCompanies.map((company, index) => (
+                <motion.div
+                  key={company.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                >
+                  <Card className="p-6 hover:shadow-lg transition-shadow">
+                    <div className="flex flex-col md:flex-row gap-6">
+                      <div className="flex-shrink-0">
+                        <img
+                          src={company.logo}
+                          alt={company.name}
+                          className="w-24 h-24 rounded-lg object-cover"
+                        />
+                      </div>
+                      <div className="flex-1 space-y-4">
+                        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+                          <div>
+                            <h2 className="text-2xl font-bold">
+                              {company.name}
+                            </h2>
+                            <div className="flex flex-wrap gap-4 mt-2 text-sm text-gray-600 dark:text-gray-300">
+                              <span className="flex items-center">
+                                <Building2 className="h-4 w-4 mr-1" />
+                                {company.industry}
+                              </span>
+                              <span className="flex items-center">
+                                <MapPin className="h-4 w-4 mr-1" />
+                                {company.location}
+                              </span>
+                              <span className="flex items-center">
+                                <Users className="h-4 w-4 mr-1" />
+                                {company.size}
+                              </span>
+                              <span className="flex items-center">
+                                <Briefcase className="h-4 w-4 mr-1" />
+                                {company.openPositions} open positions
+                              </span>
+                            </div>
+                          </div>
+                          <div className="flex gap-2">
+                            <Button variant="outline" asChild>
+                              <Link href={`/messages?company=${company.id}`}>
+                                Message
+                              </Link>
+                            </Button>
+                            <Button asChild>
+                              <Link href={`/companies/${company.id}`}>
+                                View Profile
+                              </Link>
+                            </Button>
+                          </div>
+                        </div>
+                        <p className="text-gray-600 dark:text-gray-300">
+                          {company.description}
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                          {company.positions.map((position) => (
+                            <span
+                              key={position}
+                              className="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 rounded-full text-sm"
+                            >
+                              {position}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+      </main>
+    </div>
+  );
+}
