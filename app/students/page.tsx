@@ -14,8 +14,9 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ThemeToggle } from "@/components/theme-toggle";
 import Link from "next/link";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 
-export default function StudentDashboard() {
+export default function Students() {
   const companies = [
     {
       name: "TechCorp",
@@ -48,15 +49,18 @@ export default function StudentDashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white dark:from-blue-950 dark:to-black">
-      <nav className="fixed w-full bg-white/80 dark:bg-black/80 backdrop-blur-sm border-b z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <nav className="w-full bg-white/80 dark:bg-black/80 backdrop-blur-sm border-b z-50">
+        <div className="max-w-7xl mx-auto px-4">
           <div className="flex justify-between items-center h-16">
-            <Link href="/" className="flex items-center">
-              <User className="h-8 w-8 text-blue-600 dark:text-blue-400" />
-              <span className="ml-2 text-xl font-bold text-gray-900 dark:text-white">
-                Student Dashboard
-              </span>
-            </Link>
+            <div className="flex gap-2 items-center h-16">
+              <SidebarTrigger />
+              <Link href="/" className="flex items-center">
+                <User className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+                <span className="ml-2 text-xl font-bold text-gray-900 dark:text-white">
+                  Student Dashboard
+                </span>
+              </Link>
+            </div>
             <div className="flex items-center space-x-4">
               <Button variant="ghost" size="icon">
                 <Bell className="h-5 w-5" />
@@ -72,8 +76,8 @@ export default function StudentDashboard() {
         </div>
       </nav>
 
-      <main className="pt-24 pb-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <main className="w-full pt-24 pb-16 rounded-lg">
+        <div className="px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2">
               <motion.div
@@ -87,9 +91,11 @@ export default function StudentDashboard() {
                     placeholder="Search for companies or positions..."
                     className="flex-1"
                   />
-                  <Button>
-                    <Search className="h-4 w-4 mr-2" />
-                    Search
+                  <Button asChild>
+                    <Link href="/companies/browse">
+                      <Search className="h-4 w-4 mr-2" />
+                      Browse All
+                    </Link>
                   </Button>
                 </div>
 
@@ -127,7 +133,13 @@ export default function StudentDashboard() {
                             ))}
                           </div>
                         </div>
-                        <Button variant="outline">View Profile</Button>
+                        <Button variant="outline" asChild>
+                          <Link
+                            href={`/companies/${company.name.toLowerCase()}`}
+                          >
+                            View Profile
+                          </Link>
+                        </Button>
                       </motion.div>
                     ))}
                   </div>
@@ -195,17 +207,29 @@ export default function StudentDashboard() {
               <Card className="p-6">
                 <h2 className="text-xl font-bold mb-4">Quick Actions</h2>
                 <div className="space-y-2">
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start"
+                    asChild
+                  >
+                    <Link href="/companies/browse">
+                      <Building2 className="h-4 w-4 mr-2" />
+                      Browse Companies
+                    </Link>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start"
+                    asChild
+                  >
+                    <Link href="/messages">
+                      <MessageSquare className="h-4 w-4 mr-2" />
+                      Messages
+                    </Link>
+                  </Button>
                   <Button variant="outline" className="w-full justify-start">
                     <Calendar className="h-4 w-4 mr-2" />
                     Schedule Interview
-                  </Button>
-                  <Button variant="outline" className="w-full justify-start">
-                    <Building2 className="h-4 w-4 mr-2" />
-                    Browse Companies
-                  </Button>
-                  <Button variant="outline" className="w-full justify-start">
-                    <MessageSquare className="h-4 w-4 mr-2" />
-                    Messages
                   </Button>
                 </div>
               </Card>
