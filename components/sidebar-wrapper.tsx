@@ -7,6 +7,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import Header from "./header";
 
 // Define the routes where the sidebar should be hidden
 const noSidebarRoutes = [
@@ -29,6 +30,7 @@ export function SidebarWrapper({ children }: { children: React.ReactNode }) {
       <AppSidebar />
       <SidebarInset>
         <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white dark:from-blue-950 dark:to-black">
+          <Header />
           {children}
         </div>
       </SidebarInset>
