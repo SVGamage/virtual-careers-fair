@@ -1,0 +1,275 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+enum INTERVIEW_STATUS {
+  SCHEDULED
+  COMPLETED
+  CANCELED
+}
+
+enum REQUEST_STATUS {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+enum USER_TYPE {
+  STUDENT
+  COMPANY
+  UNIVERSITY
+}
+
+enum GENDER {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum JOB_TYPE {
+  FULL_TIME
+  PART_TIME
+  INTERNSHIP
+}
+
+enum WORK_MODE {
+  REMOTE
+  ONSITE
+}
+
+model UserAccount {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  clerkId   String    @unique
+  userType  USER_TYPE
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  student    Student?
+  company    Company?
+  university University?
+}
+
+model Student {
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  firstName         String
+  lastName          String
+  bio               String
+  gender            GENDER
+  dob               DateTime
+  age               Int
+  profilePic        String
+  userAccountId     String   @unique @db.ObjectId
+  degreeProgrammeId String   @db.ObjectId
+
+  interviews         Interview[]
+  studentRoles       StudentRole[]
+  studentSkills      StudentSkill[]
+  interviewRequests  InterviewRequest[]
+  careersDayStudents CareersDayStudent[]
+  userAccount        UserAccount         @relation(fields: [userAccountId], references: [id])
+  degreeProgramme    DegreeProgramme     @relation(fields: [degreeProgrammeId], references: [id])
+}
+
+model University {
+  id             String @id @default(auto()) @map("_id") @db.ObjectId
+  universityName String
+  location       String
+  description    String
+  logo           String
+  userAccountId  String @unique @db.ObjectId
+
+  departments        Department[]
+  careersDays        CareersDay[]
+  partneredCompanies PartneredCompany[]
+  userAccount        UserAccount        @relation(fields: [userAccountId], references: [id])
+}
+
+model Department {
+  id             String @id @default(auto()) @map("_id") @db.ObjectId
+  departmentName String
+  description    String
+  logo           String
+  universityId   String @db.ObjectId
+
+  degreeProgrammes DegreeProgramme[]
+  university       University        @relation(fields: [universityId], references: [id])
+}
+
+model DegreeProgramme {
+  id            String @id @default(auto()) @map("_id") @db.ObjectId
+  degreeName    String
+  description   String
+  intake        Int
+  academicYears Int
+  departmentId  String @db.ObjectId
+
+  students   Student[]
+  department Department @relation(fields: [departmentId], references: [id])
+}
+
+model Company {
+  id              String @id @default(auto()) @map("_id") @db.ObjectId
+  companyName     String
+  description     String
+  logo            String
+  employeeCount   Int
+  industryFieldId String @db.ObjectId
+  userAccountId   String @unique @db.ObjectId
+
+  interviews          Interview[]
+  vacancies           Vacancy[]
+  interviewRequests   InterviewRequest[]
+  careersDayCompanies CareersDayCompany[]
+  partneredCompanies  PartneredCompany[]
+  industryField       IndustryField       @relation(fields: [industryFieldId], references: [id])
+  userAccount         UserAccount         @relation(fields: [userAccountId], references: [id])
+}
+
+model IndustryField {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  industryName String
+
+  companies Company[]
+}
+
+model Vacancy {
+  id           String    @id @default(auto()) @map("_id") @db.ObjectId
+  jobRoleId    String    @db.ObjectId
+  description  String
+  companyId    String    @db.ObjectId
+  salary       Int
+  jobType      JOB_TYPE
+  vacancies    Int
+  workMode     WORK_MODE
+  hoursPerWeek Int
+  experience   Int
+
+  vacancySkills VacancySkill[]
+  company       Company        @relation(fields: [companyId], references: [id])
+  jobRole       JobRole        @relation(fields: [jobRoleId], references: [id])
+}
+
+model StudentRole {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  roleId    String @db.ObjectId
+  studentId String @db.ObjectId
+
+  role    JobRole @relation(fields: [roleId], references: [id])
+  student Student @relation(fields: [studentId], references: [id])
+}
+
+model JobRole {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  roleName String
+
+  vacancies    Vacancy[]
+  studentRoles StudentRole[]
+}
+
+model PartneredCompany {
+  id                String         @id @default(auto()) @map("_id") @db.ObjectId
+  companyId         String         @db.ObjectId
+  universityId      String         @db.ObjectId
+  partnershipStatus REQUEST_STATUS
+  date              DateTime
+
+  company    Company    @relation(fields: [companyId], references: [id])
+  university University @relation(fields: [universityId], references: [id])
+}
+
+model CareersDay {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  start        DateTime
+  end          DateTime
+  universityId String   @db.ObjectId
+
+  interviews          Interview[]
+  interviewRequests   InterviewRequest[]
+  careersDayStudents  CareersDayStudent[]
+  careersDayCompanies CareersDayCompany[]
+  university          University          @relation(fields: [universityId], references: [id])
+}
+
+model CareersDayStudent {
+  id             String         @id @default(auto()) @map("_id") @db.ObjectId
+  studentId      String         @db.ObjectId
+  careersDayId   String         @db.ObjectId
+  registerStatus REQUEST_STATUS
+
+  student    Student    @relation(fields: [studentId], references: [id])
+  careersDay CareersDay @relation(fields: [careersDayId], references: [id])
+}
+
+model CareersDayCompany {
+  id             String         @id @default(auto()) @map("_id") @db.ObjectId
+  companyId      String         @db.ObjectId
+  careersDayId   String         @db.ObjectId
+  registerStatus REQUEST_STATUS
+
+  company    Company    @relation(fields: [companyId], references: [id])
+  careersDay CareersDay @relation(fields: [careersDayId], references: [id])
+}
+
+model Interview {
+  id                 String           @id @default(auto()) @map("_id") @db.ObjectId
+  interviewRequestId String           @db.ObjectId
+  studentId          String           @db.ObjectId
+  companyId          String           @db.ObjectId
+  careerDayId        String           @db.ObjectId
+  start              DateTime
+  end                DateTime
+  interviewStatus    INTERVIEW_STATUS
+
+  student          Student          @relation(fields: [studentId], references: [id])
+  company          Company          @relation(fields: [companyId], references: [id])
+  interviewRequest InterviewRequest @relation(fields: [interviewRequestId], references: [id])
+  careersDay       CareersDay       @relation(fields: [careerDayId], references: [id])
+}
+
+model InterviewRequest {
+  id              String         @id @default(auto()) @map("_id") @db.ObjectId
+  studentId       String         @db.ObjectId
+  companyId       String         @db.ObjectId
+  careerDayId     String         @db.ObjectId
+  requestStatus   REQUEST_STATUS
+  requestDateTime DateTime
+
+  interviews Interview[]
+  student    Student     @relation(fields: [studentId], references: [id])
+  company    Company     @relation(fields: [companyId], references: [id])
+  careersDay CareersDay  @relation(fields: [careerDayId], references: [id])
+}
+
+model Skill {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  description String
+  logo        String
+
+  studentSkills StudentSkill[]
+  vacancySkills VacancySkill[]
+}
+
+model StudentSkill {
+  id         String @id @default(auto()) @map("_id") @db.ObjectId
+  studentId  String @db.ObjectId
+  skillId    String @db.ObjectId
+  skillLevel Int
+
+  student Student @relation(fields: [studentId], references: [id])
+  skill   Skill   @relation(fields: [skillId], references: [id])
+}
+
+model VacancySkill {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  vacancyId String @db.ObjectId
+  skillId   String @db.ObjectId
+
+  vacancy Vacancy @relation(fields: [vacancyId], references: [id])
+  skill   Skill   @relation(fields: [skillId], references: [id])
+}
