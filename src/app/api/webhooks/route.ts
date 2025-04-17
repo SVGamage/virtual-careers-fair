@@ -29,7 +29,10 @@ export async function POST(req: NextRequest) {
 
       await prisma.userAccount.create({
         data: {
+          email: evt.data.email_addresses[0].email_address,
           clerkId: evt.data.id,
+          isVerified: false,
+          isActive: true,
           userType: USER_TYPE.STUDENT,
         },
       });
