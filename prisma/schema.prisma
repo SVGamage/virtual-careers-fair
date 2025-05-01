@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  output   = "./generated/client"
 }
 
 datasource db {
@@ -42,19 +43,62 @@ enum WORK_MODE {
   ONSITE
 }
 
-model UserAccount {
-  id         String    @id @default(auto()) @map("_id") @db.ObjectId
-  clerkId    String    @unique
-  email      String    @unique
-  isVerified Boolean   @default(false)
-  isActive   Boolean   @default(true)
-  userType   USER_TYPE
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+model User {
+  id            String    @id @map("_id")
+  name          String
+  email         String
+  emailVerified Boolean
+  image         String?
+  createdAt     DateTime
+  updatedAt     DateTime
+  sessions      Session[]
+  accounts      Account[]
 
-  student    Student?
-  company    Company?
-  university University?
+  Student    Student?
+  University University?
+  Company    Company?
+
+  @@unique([email])
+}
+
+model Session {
+  id        String   @id @map("_id")
+  expiresAt DateTime
+  token     String
+  createdAt DateTime
+  updatedAt DateTime
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+}
+
+model Account {
+  id                    String    @id @map("_id")
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime
+  updatedAt             DateTime
+}
+
+model Verification {
+  id         String    @id @map("_id")
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime?
+  updatedAt  DateTime?
 }
 
 model Student {
@@ -66,7 +110,7 @@ model Student {
   dob               DateTime
   age               Int
   profilePic        String
-  userAccountId     String   @unique @db.ObjectId
+  userId            String   @unique
   degreeProgrammeId String   @db.ObjectId
 
   interviews         Interview[]
@@ -74,7 +118,7 @@ model Student {
   studentSkills      StudentSkill[]
   interviewRequests  InterviewRequest[]
   careersDayStudents CareersDayStudent[]
-  userAccount        UserAccount         @relation(fields: [userAccountId], references: [id])
+  user               User                @relation(fields: [userId], references: [id])
   degreeProgramme    DegreeProgramme     @relation(fields: [degreeProgrammeId], references: [id])
 }
 
@@ -84,12 +128,12 @@ model University {
   location       String
   description    String
   logo           String
-  userAccountId  String @unique @db.ObjectId
+  userId         String @unique
 
   departments        Department[]
   careersDays        CareersDay[]
   partneredCompanies PartneredCompany[]
-  userAccount        UserAccount        @relation(fields: [userAccountId], references: [id])
+  user               User               @relation(fields: [userId], references: [id])
 }
 
 model Department {
@@ -122,7 +166,7 @@ model Company {
   logo            String
   employeeCount   Int
   industryFieldId String @db.ObjectId
-  userAccountId   String @unique @db.ObjectId
+  userId          String @unique
 
   interviews          Interview[]
   vacancies           Vacancy[]
@@ -130,7 +174,7 @@ model Company {
   careersDayCompanies CareersDayCompany[]
   partneredCompanies  PartneredCompany[]
   industryField       IndustryField       @relation(fields: [industryFieldId], references: [id])
-  userAccount         UserAccount         @relation(fields: [userAccountId], references: [id])
+  user                User                @relation(fields: [userId], references: [id])
 }
 
 model IndustryField {
