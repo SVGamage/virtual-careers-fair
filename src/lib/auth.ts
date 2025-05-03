@@ -11,9 +11,9 @@ export const auth = betterAuth({
     minPasswordLength: 8,
     maxPasswordLength: 32,
     autoSignIn: true,
-    async sendResetPassword(data, request) {
-      // Send an email to the user with a link to reset their password
-    },
+    // async sendResetPassword(data, request) {
+    //   // Send an email to the user with a link to reset their password
+    // },
   },
   account: {
     accountLinking: {
