@@ -3,6 +3,7 @@
 import { signOut } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { Icons } from "../icons";
+import { Button } from "@/components/ui/button";
 
 export default function SignOutButton() {
   const router = useRouter();
@@ -10,19 +11,19 @@ export default function SignOutButton() {
     await signOut({
       fetchOptions: {
         onSuccess: () => {
-          router.push("/login"); // redirect to login page
+          router.push("/sign-in"); // redirect to login page
         },
       },
     });
   };
 
   return (
-    <div
+    <Button
       onClick={handleClick}
+      variant="outline"
       className="flex items-center justify-between cursor-pointer"
     >
-      Log out
       <Icons.logOut />
-    </div>
+    </Button>
   );
 }

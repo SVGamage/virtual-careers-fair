@@ -83,3 +83,8 @@ export const currentUser = async () => {
   if (!session) return null;
   return session.user;
 };
+
+export const isAuthenticated = async () => {
+  const user = await currentUser();
+  if (!user) redirect("/sign-in");
+};
