@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { APIError } from "better-auth/api";
 import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 interface State {
   errorMessage?: string | null;
@@ -74,3 +75,11 @@ export async function signUp(prevState: State, formData: FormData) {
   }
   redirect("/dashboard");
 }
+
+export const currentUser = async () => {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  if (!session) return null;
+  return session.user;
+};
