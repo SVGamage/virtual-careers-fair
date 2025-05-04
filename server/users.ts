@@ -86,5 +86,6 @@ export const currentUser = async () => {
 
 export const isAuthenticated = async () => {
   const user = await currentUser();
+  console.log(user);
   if (!user) redirect("/sign-in");
 };
