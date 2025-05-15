@@ -24,22 +24,13 @@ export async function signIn(prevState: State, formData: FormData) {
         password,
       },
     });
-    console.log("Signed in");
+    return { error: null };
   } catch (error) {
     if (error instanceof APIError) {
-      switch (error.status) {
-        case "UNAUTHORIZED":
-          return { errorMessage: "User Not Found." };
-        case "BAD_REQUEST":
-          return { errorMessage: "Invalid email." };
-        default:
-          return { errorMessage: "Something went wrong." };
-      }
+      return { error: error.message };
     }
-    console.error("sign in with email has not worked", error);
-    throw error;
+    return { error: "Something went wrong." };
   }
-  redirect("/dashboard");
 }
 
 export async function signUp(prevState: State, formData: FormData) {
@@ -60,20 +51,13 @@ export async function signUp(prevState: State, formData: FormData) {
         password,
       },
     });
+    return { error: null };
   } catch (error) {
     if (error instanceof APIError) {
-      switch (error.status) {
-        case "UNPROCESSABLE_ENTITY":
-          return { errorMessage: "User already exists." };
-        case "BAD_REQUEST":
-          return { errorMessage: "Invalid email." };
-        default:
-          return { errorMessage: "Something went wrong." };
-      }
+      return { error: error.message };
     }
-    console.error("sign up with email and password has not worked", error);
+    return { error: "Something went wrong." };
   }
-  redirect("/dashboard");
 }
 
 export const currentUser = async () => {
