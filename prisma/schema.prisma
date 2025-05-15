@@ -44,7 +44,7 @@ enum WORK_MODE {
 }
 
 model User {
-  id            String    @id @map("_id")
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
   name          String
   email         String
   emailVerified Boolean
@@ -62,24 +62,24 @@ model User {
 }
 
 model Session {
-  id        String   @id @map("_id")
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
   expiresAt DateTime
   token     String
   createdAt DateTime
   updatedAt DateTime
   ipAddress String?
   userAgent String?
-  userId    String
+  userId    String   @db.ObjectId
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([token])
 }
 
 model Account {
-  id                    String    @id @map("_id")
+  id                    String    @id @default(auto()) @map("_id") @db.ObjectId
   accountId             String
   providerId            String
-  userId                String
+  userId                String    @db.ObjectId
   user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   accessToken           String?
   refreshToken          String?
@@ -110,7 +110,7 @@ model Student {
   dob               DateTime
   age               Int
   profilePic        String
-  userId            String   @unique
+  userId            String   @unique @db.ObjectId
   degreeProgrammeId String   @db.ObjectId
 
   interviews         Interview[]
@@ -128,7 +128,7 @@ model University {
   location       String
   description    String
   logo           String
-  userId         String @unique
+  userId         String @unique @db.ObjectId
 
   departments        Department[]
   careersDays        CareersDay[]
@@ -166,7 +166,7 @@ model Company {
   logo            String
   employeeCount   Int
   industryFieldId String @db.ObjectId
-  userId          String @unique
+  userId          String @unique @db.ObjectId
 
   interviews          Interview[]
   vacancies           Vacancy[]
