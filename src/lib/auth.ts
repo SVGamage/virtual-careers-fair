@@ -1,6 +1,7 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import prisma from "@/lib/prisma";
+import { nextCookies } from "better-auth/next-js";
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
@@ -11,10 +12,15 @@ export const auth = betterAuth({
     minPasswordLength: 8,
     maxPasswordLength: 32,
     autoSignIn: true,
+    // requireEmailVerification: true,
     // async sendResetPassword(data, request) {
-    //   // Send an email to the user with a link to reset their password
+    //   // Email the user with a link to reset their password
     // },
   },
+  // emailVerification: {
+  //   sendOnSignUp: true,
+  //   autoSignInAfterVerification: true,
+  // },
   account: {
     accountLinking: {
       enabled: true,
@@ -26,4 +32,10 @@ export const auth = betterAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     },
   },
+  advanced: {
+    database: {
+      generateId: false,
+    },
+  },
+  plugins: [nextCookies()],
 });
